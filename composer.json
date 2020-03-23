@@ -4,7 +4,8 @@
     "version": "2.0.0",
     "keywords": ["kata", "practice", "coding dojo", "dojo", "birthday", "birthday-kata"],
     "require": {
-        "swiftmailer/swiftmailer": "^6.1"
+        "swiftmailer/swiftmailer": "^6.1",
+        "php": "^7.1"
     },
     "require-dev": {
         "ext-json": "*",
@@ -33,5 +34,10 @@
             "Tests\\BirthdayGreetingsKata\\": "tests/"
         }
     },
-    "bin": ["src/main.php"]
+    "scripts": {
+        "test": [
+            "phpunit --configuration phpunit.xml.dist"
+        ]
+    }, 
+   "bin": ["src/main.php"]
 }
