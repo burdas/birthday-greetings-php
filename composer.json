@@ -5,11 +5,11 @@
     "keywords": ["kata", "practice", "coding dojo", "dojo", "birthday", "birthday-kata"],
     "require": {
         "swiftmailer/swiftmailer": "^6.1",
-        "php": "^7.1"
+        "php": "^7.1||^8.0"
     },
     "require-dev": {
         "ext-json": "*",
-        "phpunit/phpunit": "^7.5",
+        "phpunit/phpunit": "^7.5||^8.0",
         "symfony/process": "^4.2",
         "guzzlehttp/guzzle": "^6.3"
     },
