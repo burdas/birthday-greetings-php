@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BirthdayGreetingsKata;
 
+use BirthdayGreetingsKata\Domain\Employee;
+use BirthdayGreetingsKata\Domain\XDate;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;

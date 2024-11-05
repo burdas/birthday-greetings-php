@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BirthdayGreetingsKata;
 
+use BirthdayGreetingsKata\Domain\XDate;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
