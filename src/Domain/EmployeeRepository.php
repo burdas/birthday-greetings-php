@@ -7,5 +7,5 @@ namespace BirthdayGreetingsKata\Domain;
 
 interface EmployeeRepository
 {
-    function getByBirthday(XDate $birthday): ?Employee;
+    function getByBirthday(XDate $birthday): array;
 }
