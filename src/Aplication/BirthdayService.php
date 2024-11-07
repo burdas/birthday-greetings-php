@@ -6,19 +6,20 @@ use BirthdayGreetingsKata\Domain\EmployeeRepository;
 use BirthdayGreetingsKata\Domain\XDate;
 class BirthdayService
 {
-    protected EmployeeRepository $employeeRepository;
+    private EmployeeRepository $employeeRepository;
+    private MailService $mailService;
 
-    public function __constructor(EmployeeRepository $employeeRepository): void
+    public function __construct(EmployeeRepository $employeeRepository, MailService $mailService)
     {
         $this->employeeRepository = $employeeRepository;
+        $this->mailService = $mailService;
     }
 
-    public function sendGreetings(XDate $birthday, ): void
+    public function sendGreetings(XDate $birthday, string $smtpHost, int $smtpPort): void
     {
         $birthdayEmployees = $this->employeeRepository->getByBirthday($birthday);
-
         foreach ($birthdayEmployees as $employee) {
-
+            $this->mailService->sendBirthdayGreetings($employee, $smtpHost, $smtpPort);
         }
     }
 }

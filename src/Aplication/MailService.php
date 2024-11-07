@@ -4,17 +4,14 @@
 namespace BirthdayGreetingsKata\Aplication;
 
 use BirthdayGreetingsKata\Domain\Employee;
-use BirthdayGreetingsKata\Domain\EmployeeRepository;
 use BirthdayGreetingsKata\Domain\Mailer;
 
 class MailService
 {
-    protected EmployeeRepository $employeeRepository;
-    protected Mailer $mailer;
+    private Mailer $mailer;
 
-    public function __constructor(EmployeeRepository $employeeRepository, Mailer $mailer): void
+    public function __construct(Mailer $mailer)
     {
-        $this->employeeRepository = $employeeRepository;
         $this->mailer = $mailer;
     }
 
