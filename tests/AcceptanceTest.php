@@ -2,9 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BirthdayGreetingsKata;
+namespace Tests\BirthdayGreetingsKata;
 
+use BirthdayGreetingsKata\Aplication\BirthdayService;
+use BirthdayGreetingsKata\Aplication\MailService;
 use BirthdayGreetingsKata\Domain\XDate;
+use BirthdayGreetingsKata\Infraestructure\FileEmployeeRepository;
+use BirthdayGreetingsKata\Infraestructure\MailerAdapter;
+use BirthdayGreetingsKata\Infraestructure\SwiftMailer;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
@@ -22,25 +27,29 @@ class AcceptanceTest extends TestCase
     /** @before */
     protected function startMailhog(): void
     {
-        $whichDockerCompose = Process::fromShellCommandline('which docker-compose');
-        $whichDockerCompose->run();
+//        $whichDockerCompose = Process::fromShellCommandline('which docker-compose');
+//        $whichDockerCompose->run();
 
-        if ('' === $whichDockerCompose->getOutput()) {
-            $this->markTestSkipped('To run this test you should have docker-compose installed.');
-        }
+//        if ('' === $whichDockerCompose->getOutput()) {
+//            $this->markTestSkipped('To run this test you should have docker-compose installed.');
+//        }
 
-        Process::fromShellCommandline('docker stop $(docker ps -a)')->run();
+//        Process::fromShellCommandline('docker stop $(docker ps -a)')->run();
         Process::fromShellCommandline('docker-compose up -d')->run();
+        Process::fromShellCommandline('docker-compose ps')->run();
 
-        $this->service = new BirthdayService();
+        $mailService =  new MailService(new MailerAdapter());
+        $fileEmployeeRepository = new FileEmployeeRepository();
+        $this->service = new BirthdayService($fileEmployeeRepository, $mailService);
     }
 
     /** @after */
     protected function stopMailhog(): void
     {
         (new Client())->delete('http://127.0.0.1:8025/api/v1/messages');
-        Process::fromShellCommandline('docker-compose stop')->run();
-        Process::fromShellCommandline('docker-compose rm -f')->run();
+        Process::fromShellCommandline('docker-compose down')->run();
+//        Process::fromShellCommandline('docker-compose stop')->run();
+//        Process::fromShellCommandline('docker-compose rm -f')->run();
     }
 
     /**
@@ -49,7 +58,6 @@ class AcceptanceTest extends TestCase
     public function willSendGreetings_whenItsSomebodysBirthday(): void
     {
         $this->service->sendGreetings(
-            __DIR__ . '/resources/employee_data.txt',
             new XDate('2008/10/08'),
             static::SMTP_HOST,
             static::SMTP_PORT
@@ -59,7 +67,7 @@ class AcceptanceTest extends TestCase
         $this->assertCount(1, $messages, 'message not sent?');
 
         $message = $messages[0];
-        $this->assertEquals('Happy Birthday, dear John!', $message['Content']['Body']);
+        $this->assertEquals('Happy Birthday, dear John!', trim($message['Content']['Body']));
         $this->assertEquals('Happy Birthday!', $message['Content']['Headers']['Subject'][0]);
         $this->assertCount(1, $message['Content']['Headers']['To']);
         $this->assertEquals('john.doe@foobar.com', $message['Content']['Headers']['To'][0]);
@@ -71,7 +79,6 @@ class AcceptanceTest extends TestCase
     public function willNotSendEmailsWhenNobodysBirthday(): void
     {
         $this->service->sendGreetings(
-            __DIR__ . '/resources/employee_data.txt',
             new XDate('2008/01/01'),
             static::SMTP_HOST,
             static::SMTP_PORT
