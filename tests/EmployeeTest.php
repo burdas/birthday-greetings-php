@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace BirthdayGreetingsKata;
+namespace Tests\BirthdayGreetingsKata;
 
-use BirthdayGreetingsKata\Domain\Employee;
-use BirthdayGreetingsKata\Domain\XDate;
+
+use Tests\BirthdayGreetingsKata\Domain\Employee;
+use Tests\BirthdayGreetingsKata\Domain\XDate;
 use PHPUnit\Framework\TestCase;
 
 class EmployeeTest extends TestCase

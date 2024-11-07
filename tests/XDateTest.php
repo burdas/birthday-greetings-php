@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-namespace BirthdayGreetingsKata;
+namespace Tests\BirthdayGreetingsKata;
+
 
 use BirthdayGreetingsKata\Domain\XDate;
 use PHPUnit\Framework\TestCase;
