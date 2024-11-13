@@ -8,7 +8,7 @@ use BirthdayGreetingsKata\Aplication\BirthdayService;
 use BirthdayGreetingsKata\Aplication\MailService;
 use BirthdayGreetingsKata\Domain\XDate;
 use BirthdayGreetingsKata\Infraestructure\FileEmployeeRepository;
-use BirthdayGreetingsKata\Infraestructure\MailerAdapter;
+use BirthdayGreetingsKata\Infraestructure\NativePHPMailer;
 use BirthdayGreetingsKata\Infraestructure\SwiftMailer;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
@@ -27,18 +27,27 @@ class AcceptanceTest extends TestCase
     /** @before */
     protected function startMailhog(): void
     {
-//        $whichDockerCompose = Process::fromShellCommandline('which docker-compose');
-//        $whichDockerCompose->run();
-
-//        if ('' === $whichDockerCompose->getOutput()) {
-//            $this->markTestSkipped('To run this test you should have docker-compose installed.');
-//        }
-
-//        Process::fromShellCommandline('docker stop $(docker ps -a)')->run();
         Process::fromShellCommandline('docker-compose up -d')->run();
         Process::fromShellCommandline('docker-compose ps')->run();
 
-        $mailService =  new MailService(new MailerAdapter());
+        $mailService =  new MailService(new NativePHPMailer());
+        $fileEmployeeRepository = new FileEmployeeRepository();
+        $this->service = new BirthdayService($fileEmployeeRepository, $mailService);
+    }
+
+    protected function oldStartMailhog(): void
+    {
+        $whichDockerCompose = Process::fromShellCommandline('which docker-compose');
+        $whichDockerCompose->run();
+
+        if ('' === $whichDockerCompose->getOutput()) {
+            $this->markTestSkipped('To run this test you should have docker-compose installed.');
+        }
+
+        Process::fromShellCommandline('docker stop $(docker ps -a)')->run();
+        Process::fromShellCommandline('docker-compose up -d')->run();
+
+        $mailService =  new MailService(new NativePHPMailer());
         $fileEmployeeRepository = new FileEmployeeRepository();
         $this->service = new BirthdayService($fileEmployeeRepository, $mailService);
     }
@@ -48,8 +57,13 @@ class AcceptanceTest extends TestCase
     {
         (new Client())->delete('http://127.0.0.1:8025/api/v1/messages');
         Process::fromShellCommandline('docker-compose down')->run();
-//        Process::fromShellCommandline('docker-compose stop')->run();
-//        Process::fromShellCommandline('docker-compose rm -f')->run();
+    }
+
+    protected function oldStopMailhog(): void
+    {
+        (new Client())->delete('http://127.0.0.1:8025/api/v1/messages');
+        Process::fromShellCommandline('docker-compose stop')->run();
+        Process::fromShellCommandline('docker-compose rm -f')->run();
     }
 
     /**

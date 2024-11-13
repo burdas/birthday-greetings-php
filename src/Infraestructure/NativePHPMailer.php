@@ -9,7 +9,7 @@ use BirthdayGreetingsKata\Domain\Mailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class MailerAdapter implements Mailer
+class NativePHPMailer implements Mailer
 {
     function sendMail(string $smtpHost, int $smtpPort, string $sender, string $subject, string $body, string $recipient): bool
     {
